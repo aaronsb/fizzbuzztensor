@@ -142,11 +142,11 @@ The spectrum reveals:
 Given the periodic nature, FizzBuzz can be represented using trigonometric functions. The divisibility checks can be encoded as:
 
 $$
-\text{div\_by\_3}(n) = \frac{1 + \cos\left(\frac{2\pi n}{3}\right)}{2} \cdot \frac{1 + \cos\left(\frac{4\pi n}{3}\right)}{2}
+\mathrm{div}_{3}(n) = \frac{1 + \cos\left(\frac{2\pi n}{3}\right)}{2} \cdot \frac{1 + \cos\left(\frac{4\pi n}{3}\right)}{2}
 $$
 
 $$
-\text{div\_by\_5}(n) = \frac{1 + \cos\left(\frac{2\pi n}{5}\right)}{2} \cdot \frac{1 + \cos\left(\frac{4\pi n}{5}\right)}{2} \cdot \frac{1 + \cos\left(\frac{6\pi n}{5}\right)}{2} \cdot \frac{1 + \cos\left(\frac{8\pi n}{5}\right)}{2}
+\mathrm{div}_{5}(n) = \frac{1 + \cos\left(\frac{2\pi n}{5}\right)}{2} \cdot \frac{1 + \cos\left(\frac{4\pi n}{5}\right)}{2} \cdot \frac{1 + \cos\left(\frac{6\pi n}{5}\right)}{2} \cdot \frac{1 + \cos\left(\frac{8\pi n}{5}\right)}{2}
 $$
 
 These expressions equal 1 when $n$ is divisible by the respective number, and 0 otherwise.
