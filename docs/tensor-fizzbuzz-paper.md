@@ -102,22 +102,159 @@ def fizzbuzz(n):
     return result
 ```
 
-## 4. Signal Analysis
+## 4. Compact Binary Matrix: Maximum Compression
 
-### 4.1 FizzBuzz as a Discrete Signal
+### 4.1 From 15 Elements to 4
+
+The pattern vector stores 15 elements to encode all possible positions in the period. However, we can achieve further compression by recognizing that there are only **four possible outcomes**: print the number, print "Fizz", print "Buzz", or print "FizzBuzz".
+
+These four outcomes correspond to the four combinations of binary divisibility:
+
+$$
+\begin{aligned}
+(n \not\equiv 0 \pmod{3}, n \not\equiv 0 \pmod{5}) &\rightarrow \text{Number} \\
+(n \equiv 0 \pmod{3}, n \not\equiv 0 \pmod{5}) &\rightarrow \text{Fizz} \\
+(n \not\equiv 0 \pmod{3}, n \equiv 0 \pmod{5}) &\rightarrow \text{Buzz} \\
+(n \equiv 0 \pmod{3}, n \equiv 0 \pmod{5}) &\rightarrow \text{FizzBuzz}
+\end{aligned}
+$$
+
+This suggests a **2×2 binary lookup matrix** indexed by divisibility:
+
+$$
+\mathbf{M}_{\text{compact}} = \begin{bmatrix}
+0 & 2 \\
+1 & 3
+\end{bmatrix}
+$$
+
+where row index is $\mathbb{1}_{3|n}$ and column index is $\mathbb{1}_{5|n}$.
+
+### 4.2 Implementation
+
+```python
+PATTERN_COMPACT = np.array([[0, 2],
+                            [1, 3]])
+
+def fizzbuzz_compact(n):
+    nums = np.arange(1, n + 1)
+    div_by_3 = (nums % 3 == 0).astype(int)
+    div_by_5 = (nums % 5 == 0).astype(int)
+    categories = PATTERN_COMPACT[div_by_3, div_by_5]
+    return decode(categories, nums)
+```
+
+### 4.3 Storage-Computation Trade-off
+
+![Compact Matrix](images/fizzbuzz_compact.png)
+
+**Figure 1**: Left - The 2×2 compact binary matrix showing all four cases. Right - Storage comparison: 73% reduction from 15 elements to 4 elements.
+
+The compact representation trades computation for storage:
+
+| Approach | Storage | Modulo Ops | Best For |
+|----------|---------|------------|----------|
+| Pattern Vector | 15 elements | 1 per lookup | Sequential access |
+| Compact Matrix | 4 elements | 2 per lookup | Memory-constrained systems |
+
+The compact matrix is optimal when storage is at a premium (embedded systems, cache-conscious code) and the additional modulo operation is acceptable.
+
+### 4.4 Generalization
+
+For $k$ divisors, the compact binary matrix is a $2^k$ hypercube:
+- 2 divisors: $2 \times 2$ matrix (4 elements)
+- 3 divisors: $2 \times 2 \times 2$ cube (8 elements)
+- 4 divisors: $2 \times 2 \times 2 \times 2$ hypercube (16 elements)
+
+Compare to the full period approach: $\text{lcm}(d_1, \ldots, d_k)$ elements, which grows much faster.
+
+For example, with divisors $\\{3, 5, 7\\}$:
+- Compact binary: $2^3 = 8$ elements
+- Pattern vector: $\text{lcm}(3,5,7) = 105$ elements
+
+The compact representation becomes increasingly advantageous as more divisors are added.
+
+## 5. Batched 3D Tensor: Parallel Computation
+
+### 5.1 The Third Dimension
+
+Both previous approaches optimize single-sequence computation. For processing **multiple FizzBuzz sequences in parallel**, we need a third dimension: the batch dimension.
+
+A batched tensor has shape $(B, N, D)$ where:
+- $B$ = batch size (number of sequences)
+- $N$ = sequence length
+- $D$ = number of divisors
+
+$$
+\mathbf{T}[b, n, d] = \mathbb{1}_{d_i | (b \cdot N + n)}
+$$
+
+where $d_i$ is the $i$-th divisor.
+
+### 5.2 Implementation
+
+```python
+def fizzbuzz_batched(batch_size, sequence_length):
+    # Create batched number sequences
+    offsets = np.arange(batch_size)[:, None]      # (B, 1)
+    positions = np.arange(sequence_length)[None, :]  # (1, N)
+    nums = offsets * sequence_length + positions + 1  # (B, N)
+
+    # Create 3D divisibility tensor
+    divisors = np.array([3, 5])[None, None, :]  # (1, 1, D)
+    div_tensor = (nums[:, :, None] % divisors == 0)  # (B, N, D)
+
+    # Encode categories
+    categories = (div_tensor * [1, 2]).sum(axis=2)  # (B, N)
+    return decode_batched(categories, nums)
+```
+
+### 5.3 Visualization
+
+![3D Tensor Structure](images/fizzbuzz_3d_structure.png)
+
+**Figure 2**: Batched 3D tensor structure. Top-left: 3D scatter showing all tensor elements. Top-right: Category heatmap across batches. Bottom: Separate divisibility heatmaps for divisors 3 and 5.
+
+The visualization reveals:
+- Each batch is an independent FizzBuzz sequence
+- Divisibility patterns tile across batches
+- The two divisor dimensions are independent and can be computed separately
+
+### 5.4 Parallel Computation Advantages
+
+The batched approach enables:
+
+1. **GPU Acceleration**: Modern GPUs excel at tensor operations. The entire $(B, N, D)$ tensor can be computed in parallel.
+
+2. **Distributed Computing**: Different batches can be assigned to different workers/nodes.
+
+3. **Vectorized Processing**: SIMD instructions process multiple elements simultaneously.
+
+4. **Cache Efficiency**: Contiguous memory access patterns improve cache utilization.
+
+**Complexity**: Computing $B$ sequences of length $N$ each:
+- Sequential (traditional): $O(BN)$ time, $O(1)$ space
+- Pattern vector: $O(BN)$ time, $O(15)$ space
+- Batched tensor: $O(BN/P)$ time on $P$ processors, $O(BND)$ space
+
+The batched approach trades space for parallelism, ideal for high-throughput scenarios.
+
+## 6. Signal Analysis
+
+### 6.1 FizzBuzz as a Discrete Signal
 
 Viewing the category values as a discrete signal $s[n] = c(n)$, we can analyze its properties:
 
 ![FizzBuzz Waveform](images/fizzbuzz_waveform.png)
 
-**Figure 1**: Top - The FizzBuzz pattern signal over 5 periods. Middle - Component signals showing divisibility by 3 (blue) and 5 (orange). Bottom - Binary divisibility matrix.
+**Figure 3**: Top - The FizzBuzz pattern signal over 5 periods. Middle - Component signals showing divisibility by 3 (blue) and 5 (orange). Bottom - Binary divisibility matrix.
 
 The waveform clearly shows:
 - Periodic structure with period $P = 15$
 - Two component frequencies (1/3 and 1/5) that interfere to create the pattern
 - The binary matrix reveals the underlying divisibility checks
 
-### 4.2 Frequency Domain Analysis
+### 6.2 Frequency Domain Analysis
 
 Applying the Discrete Fourier Transform:
 
@@ -245,21 +382,59 @@ def create_pattern(divisors):
 
 ## 8. Computational Complexity
 
-### 8.1 Space Complexity
+### 8.1 Space Complexity Comparison
 
-- **Traditional approach**: $O(1)$ (no storage, compute on-the-fly)
-- **Pattern vector**: $O(\text{lcm}(d_1, \ldots, d_k))$ (constant for fixed divisors)
-- **For FizzBuzz**: $O(15) = O(1)$
+| Approach | Storage | Formula | FizzBuzz (k=2) | {3,5,7} (k=3) |
+|----------|---------|---------|----------------|---------------|
+| Traditional | $O(1)$ | None | 0 | 0 |
+| Pattern Vector | $O(\text{lcm}(d_1, \ldots, d_k))$ | LCM of divisors | 15 | 105 |
+| Compact Binary | $O(2^k)$ | Exponential in k | 4 | 8 |
+| Batched Tensor | $O(BN \cdot k)$ | Batch × sequence × divisors | Variable | Variable |
 
-### 8.2 Time Complexity
+**Analysis**:
+- Traditional: No storage, but requires computation for every element
+- Pattern vector: Moderate storage, grows with LCM (can be very large)
+- Compact binary: **Minimal storage**, grows exponentially but starts small
+- Batched tensor: Large storage, but enables parallelism
 
-Per element:
-- **Traditional**: $O(k)$ modulo operations and comparisons
-- **Pattern vector**: $O(1)$ modulo and lookup
+For small $k$, compact binary is optimal. As $k$ grows, $2^k$ eventually exceeds $\text{lcm}(d_1, \ldots, d_k)$ depending on divisor choice.
 
-For sequence of length $N$:
-- **Traditional**: $O(Nk)$
-- **Pattern vector**: $O(N)$ (vectorized, highly parallelizable)
+### 8.2 Time Complexity Comparison
+
+**Per-element lookup** (single value):
+
+| Approach | Time | Modulo Ops | Lookups |
+|----------|------|------------|---------|
+| Traditional | $O(k)$ | $k$ | 0 |
+| Pattern Vector | $O(1)$ | 1 | 1 |
+| Compact Binary | $O(k)$ | $k$ | 1 |
+
+**Sequence of length $N$**:
+
+| Approach | Sequential | Parallel (P processors) |
+|----------|-----------|------------------------|
+| Traditional | $O(Nk)$ | $O(Nk/P)$ |
+| Pattern Vector | $O(N)$ | $O(N/P)$ |
+| Compact Binary | $O(Nk)$ | $O(Nk/P)$ |
+| Batched Tensor | $O(Nk)$ | $O(Nk/P)$ optimal parallelism |
+
+**Analysis**:
+- Pattern vector: Fastest per-element (single modulo)
+- Compact binary: Same per-element cost as traditional, but smaller footprint
+- Batched tensor: Same overall complexity, but structured for maximum parallelism
+
+### 8.3 Trade-off Summary
+
+Each approach optimizes for different constraints:
+
+1. **Pattern Vector**: Balanced - moderate storage, fast lookups
+2. **Compact Binary**: Minimal storage at cost of extra computation
+3. **Batched Tensor**: Maximum parallelism at cost of large memory footprint
+
+The choice depends on the deployment environment:
+- Embedded systems → Compact binary
+- Sequential processing → Pattern vector
+- GPU/distributed computing → Batched tensor
 
 ## 9. Philosophical Implications
 
@@ -278,15 +453,23 @@ This transforms FizzBuzz from an interview screening question into a case study 
 
 ## 10. Conclusion
 
-We have demonstrated that FizzBuzz, when viewed through the lens of tensor operations and signal processing, reveals a rich mathematical structure. The pattern vector representation:
+We have demonstrated that FizzBuzz, when viewed through the lens of tensor operations and signal processing, reveals a rich mathematical structure. Three distinct tensor representations emerge, each optimized for different constraints:
 
-- Reduces infinite sequences to finite lookup tables
-- Enables $O(1)$ per-element computation
-- Exposes the periodic and spectral nature of the problem
-- Generalizes naturally to arbitrary divisor sets
-- Connects to trigonometric and Fourier-based solutions
+**Pattern Vector (15 elements)**: The initial discovery - representing the complete period as a rank-1 tensor. This exposes the periodic structure ($P = 15 = \text{lcm}(3,5)$) and enables $O(1)$ lookups with a single modulo operation. Signal analysis reveals fundamental frequency at $1/15$ and component frequencies at $1/3$ and $1/5$.
 
-This approach transforms a simple programming exercise into an exploration of periodicity, signal analysis, and the expressive power of tensor operations.
+**Compact Binary Matrix (4 elements)**: Maximum compression achieved by indexing directly on binary divisibility rather than position in cycle. This 73% storage reduction makes the representation optimal for memory-constrained environments while maintaining the same lookup semantics.
+
+**Batched 3D Tensor**: Introducing the batch dimension enables parallel computation of multiple sequences simultaneously. The $(B, N, D)$ structure is ideal for GPU acceleration and distributed computing, trading storage for parallelism.
+
+These representations share common insights:
+- Finite lookup tables encode infinite sequences
+- Periodicity is fundamental, not incidental
+- Different dimensional structures solve different problems
+- Tensor operations make structure explicit
+
+The progression from pattern vector → compact matrix → batched tensor demonstrates how representation choice depends on deployment constraints: storage, computation, or parallelism.
+
+This transforms a simple programming exercise into an exploration of periodicity, dimensional reduction, signal analysis, and the trade-offs inherent in different tensor representations.
 
 ---
 
@@ -296,10 +479,21 @@ This approach transforms a simple programming exercise into an exploration of pe
 
 ### Code
 
-- Implementation: `fizzbuzz.py`
-- Visualizations: `visualize.py`
-- Pattern vector: 15-element rank-1 tensor encoding complete solution
+**Implementations:**
+- `fizzbuzz.py` - Pattern vector approach (15 elements)
+- `fizzbuzz_compact.py` - Compact binary matrix (4 elements)
+- `fizzbuzz_batched.py` - Batched 3D tensor (parallel computation)
+- `dimensional_representations.py` - Comparison of all approaches
+
+**Visualizations:**
+- `visualize.py` - Pattern vector (waveform, FFT, 2D heatmap)
+- `visualize_compact.py` - Compact matrix and decision tree
+- `visualize_batched.py` - 3D tensor structure and parallel batches
+
+**Properties:**
+- Pattern period: $P = 15 = \text{lcm}(3, 5)$
 - Fundamental frequency: $f_0 = 1/15 \approx 0.0667$ cycles/sample
+- Storage range: 4 elements (compact) to 15 elements (pattern vector)
 
 ## Acknowledgments
 
