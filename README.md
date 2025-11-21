@@ -4,23 +4,35 @@
 
 A tensor-based approach to FizzBuzz that reveals its underlying mathematical structure as a periodic signal.
 
-## Overview
+## Three Approaches, Three Problems
 
-Instead of solving FizzBuzz with conditionals, we represent it as a **pattern vector** - a rank-1 tensor of period 15 that encodes the complete solution:
+This project explores FizzBuzz through three different tensor representations, each optimized for a different use case:
 
+### 1. Pattern Vector (15 elements) - Fast Sequential Access
 ```python
 PATTERN = [0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0, 0, 3]
+category = PATTERN[(n-1) % 15]  # O(1) lookup, 1 modulo operation
 ```
+**Best for:** Sequential iteration, simple indexing
+**Visualization:** Signal processing view (waveform, FFT, 2D heatmap)
 
-This single vector represents the entire infinite FizzBuzz sequence. Any position `n` maps to the pattern via modular indexing: `PATTERN[(n-1) % 15]`.
+### 2. Compact Binary Matrix (4 elements) - Minimal Storage
+```python
+PATTERN_COMPACT = [[0, 2],  # 73% storage reduction
+                   [1, 3]]
+category = PATTERN_COMPACT[n%3==0][n%5==0]  # 2 modulo operations
+```
+**Best for:** Memory-constrained environments, embedded systems
+**Visualization:** 2×2 heatmap showing binary divisibility structure
 
-## Key Insights
-
-- **Period**: LCM(3, 5) = 15 - the pattern repeats every 15 positions
-- **Constant Space**: 15 elements encode infinite sequences
-- **O(1) Lookup**: Compute any position instantly via modulo
-- **Signal Processing**: FizzBuzz is a discrete periodic signal with fundamental frequency 1/15
-- **Vectorized**: Fully parallelizable using NumPy broadcasting
+### 3. Batched 3D Tensor - Parallel Computation
+```python
+# Shape: (batch_size, sequence_length, n_divisors)
+# Compute multiple sequences simultaneously
+result, div_tensor = fizzbuzz_batched(batch_size=10, sequence_length=100)
+```
+**Best for:** Distributed computing, GPU acceleration, processing multiple ranges
+**Visualization:** 3D structure showing parallel batch computation
 
 ## Quick Start
 
@@ -36,15 +48,21 @@ print_fizzbuzz(30)
 
 ## Visualizations
 
-FizzBuzz as a waveform, frequency spectrum, and 2D texture:
-
+### Pattern Vector Approach (Signal Processing)
 ![Waveform](docs/images/fizzbuzz_waveform.png)
 ![Frequency Spectrum](docs/images/fizzbuzz_fft.png)
-![2D Heatmap](docs/images/fizzbuzz_2d.png)
 
-Generate visualizations:
+### Compact Binary Matrix Approach (Minimal Storage)
+![Compact Matrix](docs/images/fizzbuzz_compact.png)
+
+### Batched 3D Tensor Approach (Parallel Computation)
+![3D Structure](docs/images/fizzbuzz_3d_structure.png)
+
+Generate all visualizations:
 ```bash
-python visualize.py
+python visualize.py           # Pattern vector approach
+python visualize_compact.py   # Compact matrix
+python visualize_batched.py   # Batched 3D tensor
 ```
 
 ## The Paper
@@ -52,8 +70,10 @@ python visualize.py
 Read the full analysis: [TensorFizzBuzz: A Signal Processing Approach](docs/tensor-fizzbuzz-paper.md)
 
 Topics covered:
-- Pattern vector representation
-- Rank-2 divisibility matrices and rank-1 compression
+- Pattern vector representation (15-element sequential)
+- Compact binary matrix (4-element compression)
+- Batched 3D tensors (parallel computation)
+- Rank-2 divisibility matrices and dimensional compression
 - Frequency domain analysis (FFT)
 - Trigonometric representations
 - Generalization to arbitrary divisors
