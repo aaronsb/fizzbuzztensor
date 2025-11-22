@@ -1,6 +1,6 @@
 # TensorFizzBuzz: A Signal Processing Approach to a Classic Problem
 
-**Abstract**: We present a novel tensor-based approach to FizzBuzz that reveals its underlying mathematical structure as a periodic signal with well-defined spectral properties. By representing FizzBuzz as a pattern vector of period 15, we reduce the problem from algorithmic conditionals to simple modular indexing. We demonstrate that FizzBuzz can be understood as a discrete signal with a fundamental frequency of 1/15 cycles per sample, and explore connections to trigonometric and Fourier-based solutions.
+**Abstract**: We present a tensor-based approach to FizzBuzz that reveals its underlying mathematical structure as a periodic signal with well-defined spectral properties. By representing FizzBuzz as a pattern vector of period 15, we reduce the problem from algorithmic conditionals to simple modular indexing. We demonstrate that FizzBuzz can be understood as a discrete signal with a fundamental frequency of 1/15 cycles per sample, and explore connections to trigonometric and Fourier-based solutions.
 
 ---
 
