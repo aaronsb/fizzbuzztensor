@@ -20,6 +20,10 @@ However, this algorithmic perspective obscures the problem's fundamental mathema
 
 We propose viewing FizzBuzz not as a sequence of conditionals, but as a **periodic signal** that can be represented as a rank-1 tensor - the pattern vector. This representation makes the periodicity explicit and enables efficient vectorized computation.
 
+That this machinery is vastly more complex than the problem requires is precisely the point. Sometimes the best way to understand a structure is to build something unnecessarily beautiful around it.[^1]
+
+[^1]: The traditional solution works fine. This is not about necessity—it's about what becomes visible when you refuse to stop at "good enough."
+
 ## 2. The Pattern Vector
 
 ### 2.1 Periodicity and the LCM
@@ -157,7 +161,7 @@ The compact representation trades computation for storage:
 | Pattern Vector | 15 elements | 1 per lookup | Sequential access |
 | Compact Matrix | 4 elements | 2 per lookup | Memory-constrained systems |
 
-The compact matrix is optimal when storage is at a premium (embedded systems, cache-conscious code) and the additional modulo operation is acceptable.
+For a problem that traditionally prints 100 integers, optimizing the storage of a 2×2 matrix from 15 elements to 4 is, admittedly, solving a problem that does not exist. But the compact matrix is optimal when storage is at a premium (embedded systems, cache-conscious code) and the additional modulo operation is acceptable.
 
 ### 4.4 Generalization
 
@@ -237,7 +241,7 @@ The batched approach enables:
 - Pattern vector: $O(BN)$ time, $O(15)$ space
 - Batched tensor: $O(BN/P)$ time on $P$ processors, $O(BND)$ space
 
-The batched approach trades space for parallelism, ideal for high-throughput scenarios.
+The batched approach trades space for parallelism, ideal for high-throughput scenarios. No one needs to generate FizzBuzz sequences in parallel on a GPU, but the fact that we *can* tells us something about the mathematical structure we've uncovered.
 
 ## 6. Signal Analysis
 
@@ -469,7 +473,9 @@ These representations share common insights:
 
 The progression from pattern vector → compact matrix → batched tensor demonstrates how representation choice depends on deployment constraints: storage, computation, or parallelism.
 
-This transforms a simple programming exercise into an exploration of periodicity, dimensional reduction, signal analysis, and the trade-offs inherent in different tensor representations.
+This transforms a simple programming exercise into an exploration of periodicity, dimensional reduction, signal analysis, and the trade-offs inherent in different tensor representations. More importantly, it demonstrates that **unnecessary sophistication, when executed with mathematical rigor, can reveal structure that simpler approaches obscure**.
+
+The question was never "should we solve FizzBuzz this way?" but rather "what becomes visible when we do?"
 
 ---
 
@@ -503,4 +509,8 @@ This work was directly inspired by Susam Pal's "Fizz Buzz With Cosines" [1], whi
 
 **Repository**: `/home/aaron/Projects/ai/tensorfizzbuzz/`
 
+---
+
 *"The most elemental solution to FizzBuzz is not an algorithm, but a number: 15."*
+
+*"Necessity is the mother of invention. This is not that."*
