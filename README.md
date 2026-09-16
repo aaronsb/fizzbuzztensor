@@ -1,5 +1,9 @@
 # TensorFizzBuzz 🎵
 
+[![CI](https://github.com/aaronsb/fizzbuzztensor/actions/workflows/ci.yml/badge.svg)](https://github.com/aaronsb/fizzbuzztensor/actions/workflows/ci.yml)
+![License](https://img.shields.io/github/license/aaronsb/fizzbuzztensor)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+
 > *"The most elemental solution to FizzBuzz is not an algorithm, but a number: 15."*
 
 A tensor-based approach to FizzBuzz that reveals its underlying mathematical structure as a periodic signal.
@@ -96,9 +100,21 @@ pattern, decoder = create_pattern([(3, "Fizz"), (5, "Buzz"), (7, "Bazz")])
 ## Installation
 
 ```bash
-pip install numpy matplotlib
-python fizzbuzz.py
+uv sync            # or: pip install numpy matplotlib
+uv run python fizzbuzz.py
 ```
+
+## Development
+
+```bash
+uv sync --extra dev
+uv run pytest          # every representation vs. the naive reference
+uv run ruff check .    # lint
+uv run ruff format .   # format
+```
+
+CI runs the same checks on Python 3.10 through 3.13 and renders every figure
+headlessly. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Inspiration
 
