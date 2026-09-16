@@ -10,15 +10,17 @@ Demonstrates how different tensor shapes solve different problems:
 
 import numpy as np
 
-
 # ============================================================================
 # Representation 1: Binary Divisibility Matrix (2×2 - most compressed)
 # ============================================================================
 
-PATTERN_BINARY = np.array([
-    [0, 2],  # not div by 3: [number, Buzz]
-    [1, 3]   # div by 3:     [Fizz, FizzBuzz]
-])
+PATTERN_BINARY = np.array(
+    [
+        [0, 2],  # not div by 3: [number, Buzz]
+        [1, 3],  # div by 3:     [Fizz, FizzBuzz]
+    ]
+)
+
 
 def fizzbuzz_binary(n):
     """
@@ -46,11 +48,14 @@ def fizzbuzz_binary(n):
 # Representation 2: Modular Matrix (3×5 - explicit structure)
 # ============================================================================
 
-PATTERN_MODULAR = np.array([
-    [3, 1, 1, 1, 1],  # n%3==0 (divisible by 3)
-    [2, 0, 0, 0, 0],  # n%3==1
-    [2, 0, 0, 0, 0]   # n%3==2
-])
+PATTERN_MODULAR = np.array(
+    [
+        [3, 1, 1, 1, 1],  # n%3==0 (divisible by 3)
+        [2, 0, 0, 0, 0],  # n%3==1
+        [2, 0, 0, 0, 0],  # n%3==2
+    ]
+)
+
 
 def fizzbuzz_modular(n):
     """
@@ -75,6 +80,7 @@ def fizzbuzz_modular(n):
 
 PATTERN_VECTOR = np.array([0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0, 0, 3])
 
+
 def fizzbuzz_vector(n):
     """
     Sequential pattern: 15 elements.
@@ -95,6 +101,7 @@ def fizzbuzz_vector(n):
 # ============================================================================
 # Representation 4: Batched 3D Tensor (batch × sequence × divisors)
 # ============================================================================
+
 
 def fizzbuzz_batched(batch_size, sequence_length):
     """
@@ -138,6 +145,7 @@ def fizzbuzz_batched(batch_size, sequence_length):
 # ============================================================================
 # Comparison and Analysis
 # ============================================================================
+
 
 def compare_representations():
     """Compare the different representations."""

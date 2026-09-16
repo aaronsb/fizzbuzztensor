@@ -6,13 +6,14 @@ Maximum compression: 2×2 matrix (4 elements) indexed by binary divisibility.
 
 import numpy as np
 
-
 # The compact 2×2 lookup table
 # Index: [divisible by 3?][divisible by 5?]
-PATTERN_COMPACT = np.array([
-    [0, 2],  # not div by 3: [number, Buzz]
-    [1, 3]   # div by 3:     [Fizz, FizzBuzz]
-])
+PATTERN_COMPACT = np.array(
+    [
+        [0, 2],  # not div by 3: [number, Buzz]
+        [1, 3],  # div by 3:     [Fizz, FizzBuzz]
+    ]
+)
 
 # Decoder: category → output
 DECODER = np.array(["{}", "Fizz", "Buzz", "FizzBuzz"], dtype=object)
@@ -43,7 +44,7 @@ def fizzbuzz(n):
     result = DECODER[categories].copy()
 
     # Fill in numbers where category is 0
-    number_mask = (categories == 0)
+    number_mask = categories == 0
     result[number_mask] = nums[number_mask].astype(str)
 
     return result

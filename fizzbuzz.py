@@ -6,7 +6,6 @@ FizzBuzz reduced to its mathematical essence - a repeating pattern of period 15.
 
 import numpy as np
 
-
 # The fundamental pattern: the complete solution to FizzBuzz
 # Period = LCM(3, 5) = 15
 PATTERN = np.array([0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0, 0, 3])
@@ -37,7 +36,7 @@ def fizzbuzz(n):
     result = DECODER[categories].copy()
 
     # Fill in numbers where category is 0
-    number_mask = (categories == 0)
+    number_mask = categories == 0
     result[number_mask] = nums[number_mask].astype(str)
 
     return result
@@ -118,12 +117,12 @@ if __name__ == "__main__":
     print("=" * 50)
     pattern_357, decoder_357 = create_pattern([(3, "Fizz"), (5, "Buzz"), (7, "Bazz")])
     print(f"Pattern length (LCM): {len(pattern_357)}")
-    print(f"First 35 values:")
+    print("First 35 values:")
 
     nums = np.arange(1, 36)
     categories = pattern_357[(nums - 1) % len(pattern_357)]
     result = decoder_357[categories].copy()
-    number_mask = (result == "{}")
+    number_mask = result == "{}"
     result[number_mask] = nums[number_mask].astype(str)
 
     for i, val in enumerate(result, 1):
