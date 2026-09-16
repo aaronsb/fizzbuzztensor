@@ -33,3 +33,6 @@ wheels/
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated figures at the repo root (visualize.py writes here)
+/*.png

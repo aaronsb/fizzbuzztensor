@@ -2,9 +2,9 @@
 Visualization for the Batched 3D Tensor Approach
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+
 from fizzbuzz_batched import fizzbuzz_batched
 
 
@@ -119,11 +119,11 @@ def plot_parallel_computation(save_path="docs/images/fizzbuzz_parallel.png"):
         colors_map = {0: '#E0E0E0', 1: '#FFA726', 2: '#66BB6A', 3: '#FFEB3B'}
         bar_colors = [colors_map[int(c)] for c in categories]
 
-        bars = ax.bar(positions, np.ones(seq_len), color=bar_colors,
-                     edgecolor='black', linewidth=0.5)
+        ax.bar(positions, np.ones(seq_len), color=bar_colors,
+               edgecolor='black', linewidth=0.5)
 
         # Add text labels
-        for i, (pos, cat) in enumerate(zip(positions, categories)):
+        for i, pos in enumerate(positions):
             if i % 2 == 0:  # Label every other position to avoid crowding
                 ax.text(pos, 0.5, result[idx, i], ha='center', va='center',
                        fontsize=8, fontweight='bold')

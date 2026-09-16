@@ -1,0 +1,22 @@
+name: Idea
+description: A new representation, visualization, generalization, or section for the paper
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What would you add and what does it reveal about the problem?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Tensor representation
+        - Visualization
+        - Paper / explainer
+        - Tooling / CI
+    validations:
+      required: true

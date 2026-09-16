@@ -2,9 +2,10 @@
 Visualize FizzBuzz as a waveform - because why not?
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
-from fizzbuzz import PATTERN, fizzbuzz
+import numpy as np
+
+from fizzbuzz import PATTERN
 
 
 def plot_pattern_waveform(periods=5, save_path="fizzbuzz_waveform.png"):

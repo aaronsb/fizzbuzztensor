@@ -2,9 +2,9 @@
 Visualization for the Compact 2×2 Binary Matrix Approach
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
-from fizzbuzz_compact import PATTERN_COMPACT, DECODER
+
+from fizzbuzz_compact import DECODER, PATTERN_COMPACT
 
 
 def plot_compact_matrix(save_path="docs/images/fizzbuzz_compact.png"):
@@ -45,10 +45,11 @@ def plot_compact_matrix(save_path="docs/images/fizzbuzz_compact.png"):
     elements = [4, 15]
     colors = ['#2E7D32', '#1565C0']
 
-    bars = ax2.bar(representations, elements, color=colors, alpha=0.7, edgecolor='black', linewidth=2)
+    bars = ax2.bar(representations, elements, color=colors, alpha=0.7,
+                   edgecolor='black', linewidth=2)
 
     # Add value labels on bars
-    for bar, val in zip(bars, elements):
+    for bar, val in zip(bars, elements, strict=True):
         height = bar.get_height()
         ax2.text(bar.get_x() + bar.get_width()/2., height,
                 f'{val} elements',
@@ -129,7 +130,8 @@ def plot_decision_tree(save_path="docs/images/fizzbuzz_decision_tree.png"):
     ax.set_xlim(0, 1)
     ax.set_ylim(0.2, 1)
 
-    ax.set_title('Binary Decision Tree for Compact FizzBuzz', fontsize=16, fontweight='bold', pad=20)
+    ax.set_title('Binary Decision Tree for Compact FizzBuzz',
+                 fontsize=16, fontweight='bold', pad=20)
 
     # Add matrix representation
     ax.text(0.5, 0.1, 'Matrix Representation: PATTERN[div_by_3][div_by_5]',

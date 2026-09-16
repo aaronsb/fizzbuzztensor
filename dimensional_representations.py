@@ -10,7 +10,6 @@ Demonstrates how different tensor shapes solve different problems:
 
 import numpy as np
 
-
 # ============================================================================
 # Representation 1: Binary Divisibility Matrix (2×2 - most compressed)
 # ============================================================================

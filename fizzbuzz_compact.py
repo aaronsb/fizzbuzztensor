@@ -6,7 +6,6 @@ Maximum compression: 2×2 matrix (4 elements) indexed by binary divisibility.
 
 import numpy as np
 
-
 # The compact 2×2 lookup table
 # Index: [divisible by 3?][divisible by 5?]
 PATTERN_COMPACT = np.array([
