@@ -21,8 +21,8 @@ The encoding is simple: 0 means print the number, 1 means "Fizz", 2 means "Buzz"
 The pattern vector can be computed directly from divisibility checks using NumPy broadcasting:
 
 ```python
-nums = np.arange(1, 16)[:, None]  # (15, 1)
-divisors = np.array([3, 5])[None, :]  # (1, 2)
+nums = np.arange(1, 16)[:, None]        # (15, 1)
+divisors = np.array([3, 5])[None, :]    # (1, 2)
 div_matrix = (nums % divisors == 0).astype(int)  # (15, 2)
 PATTERN = div_matrix @ np.array([1, 2])  # Encode as single vector
 ```

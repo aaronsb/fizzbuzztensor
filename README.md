@@ -15,18 +15,16 @@ This project explores FizzBuzz through three different tensor representations, e
 ### 1. Pattern Vector (15 elements) - Fast Sequential Access
 ```python
 PATTERN = [0, 0, 1, 0, 2, 1, 0, 0, 1, 2, 0, 1, 0, 0, 3]
-category = PATTERN[(n - 1) % 15]  # O(1) lookup, 1 modulo operation
+category = PATTERN[(n-1) % 15]  # O(1) lookup, 1 modulo operation
 ```
 **Best for:** Sequential iteration, simple indexing
 **Visualization:** Signal processing view (waveform, FFT, 2D heatmap)
 
 ### 2. Compact Binary Matrix (4 elements) - Minimal Storage
 ```python
-PATTERN_COMPACT = [
-    [0, 2],  # 73% storage reduction
-    [1, 3],
-]
-category = PATTERN_COMPACT[n % 3 == 0][n % 5 == 0]  # 2 modulo operations
+PATTERN_COMPACT = [[0, 2],  # 73% storage reduction
+                   [1, 3]]
+category = PATTERN_COMPACT[n%3==0][n%5==0]  # 2 modulo operations
 ```
 **Best for:** Memory-constrained environments, embedded systems
 **Visualization:** 2×2 heatmap showing binary divisibility structure

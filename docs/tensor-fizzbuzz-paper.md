@@ -79,8 +79,8 @@ where $\mathbb{1}_{d|i}$ is 1 if $d$ divides $i$, else 0.
 import numpy as np
 
 # Create pattern for one period
-nums = np.arange(1, 16)[:, None]  # (15, 1)
-divisors = np.array([3, 5])[None, :]  # (1, 2)
+nums = np.arange(1, 16)[:, None]        # (15, 1)
+divisors = np.array([3, 5])[None, :]    # (1, 2)
 
 # Divisibility matrix via broadcasting
 div_matrix = (nums % divisors == 0).astype(int)  # (15, 2)
@@ -137,8 +137,8 @@ where row index is $\mathbb{1}_{3|n}$ and column index is $\mathbb{1}_{5|n}$.
 ### 4.2 Implementation
 
 ```python
-PATTERN_COMPACT = np.array([[0, 2], [1, 3]])
-
+PATTERN_COMPACT = np.array([[0, 2],
+                            [1, 3]])
 
 def fizzbuzz_compact(n):
     nums = np.arange(1, n + 1)
@@ -200,13 +200,13 @@ where $d_i$ is the $i$-th divisor.
 ```python
 def fizzbuzz_batched(batch_size, sequence_length):
     # Create batched number sequences
-    offsets = np.arange(batch_size)[:, None]  # (B, 1)
+    offsets = np.arange(batch_size)[:, None]      # (B, 1)
     positions = np.arange(sequence_length)[None, :]  # (1, N)
     nums = offsets * sequence_length + positions + 1  # (B, N)
 
     # Create 3D divisibility tensor
     divisors = np.array([3, 5])[None, None, :]  # (1, 1, D)
-    div_tensor = nums[:, :, None] % divisors == 0  # (B, N, D)
+    div_tensor = (nums[:, :, None] % divisors == 0)  # (B, N, D)
 
     # Encode categories
     categories = (div_tensor * [1, 2]).sum(axis=2)  # (B, N)
@@ -333,9 +333,9 @@ $$
 This can be computed via broadcasting:
 
 ```python
-nums = np.arange(1, N + 1)[:, None]  # (N, 1)
-divisors = np.array([3, 5])[None, :]  # (1, 2)
-M = nums % divisors == 0  # (N, 2) via broadcasting
+nums = np.arange(1, N+1)[:, None]      # (N, 1)
+divisors = np.array([3, 5])[None, :]   # (1, 2)
+M = (nums % divisors == 0)              # (N, 2) via broadcasting
 ```
 
 ### 6.3 Rank-1 Compression

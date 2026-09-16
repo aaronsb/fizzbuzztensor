@@ -51,6 +51,10 @@ def test_pattern_vector_matches_reference(n):
 
 def test_fizzbuzz_zero_is_empty():
     assert len(fizzbuzz(0)) == 0
+    assert len(fizzbuzz_compact(0)) == 0
+    assert len(dims.fizzbuzz_binary(0)) == 0
+    assert len(dims.fizzbuzz_modular(0)) == 0
+    assert len(dims.fizzbuzz_vector(0)) == 0
 
 
 # --- Compact 2x2 matrix -------------------------------------------------------
@@ -58,7 +62,11 @@ def test_fizzbuzz_zero_is_empty():
 
 def test_compact_matrix_is_2x2():
     assert PATTERN_COMPACT.shape == (2, 2)
-    assert sorted(PATTERN_COMPACT.ravel()) == [0, 1, 2, 3]
+    # Rows index divisibility by 3, columns by 5.
+    assert PATTERN_COMPACT[0, 0] == 0  # neither -> number
+    assert PATTERN_COMPACT[1, 0] == 1  # by 3 -> Fizz
+    assert PATTERN_COMPACT[0, 1] == 2  # by 5 -> Buzz
+    assert PATTERN_COMPACT[1, 1] == 3  # both -> FizzBuzz
 
 
 @pytest.mark.parametrize("n", N_VALUES)
@@ -117,6 +125,23 @@ def test_create_pattern_period_is_lcm():
     assert len(decoder) == 8
     assert decoder[7] == "FizzBuzzBazz"
     assert decoder[0] == "{}"
+
+
+def test_create_pattern_period_is_lcm_not_product():
+    pattern, _ = create_pattern([(4, "Four"), (6, "Six")])
+    assert len(pattern) == 12  # lcm(4, 6), not 24
+
+
+def test_create_pattern_single_divisor():
+    pattern, decoder = create_pattern([(7, "Bazz")])
+    assert len(pattern) == 7
+    assert list(pattern) == [0, 0, 0, 0, 0, 0, 1]
+    assert list(decoder) == ["{}", "Bazz"]
+
+
+def test_create_pattern_label_order_follows_divisor_order():
+    _, decoder = create_pattern([(5, "Buzz"), (3, "Fizz")])
+    assert decoder[3] == "BuzzFizz"
 
 
 def test_create_pattern_generalized_output():

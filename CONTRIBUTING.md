@@ -11,8 +11,8 @@ uv run pytest
 uv run ruff check .
 ```
 
-`uv` installs the pinned dependencies from `uv.lock`. If you prefer plain pip:
-`pip install -e ".[dev]"`.
+`uv` installs the pinned dependencies from `uv.lock`. With plain pip:
+`pip install numpy matplotlib pytest ruff`.
 
 ## Ground rules
 
