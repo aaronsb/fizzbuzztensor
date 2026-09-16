@@ -19,22 +19,37 @@ def plot_pattern_waveform(periods=5, save_path="fizzbuzz_waveform.png"):
 
     # Plot 1: The raw category signal
     ax = axes[0]
-    ax.plot(x, extended_pattern, linewidth=2, color='steelblue')
-    ax.scatter(x, extended_pattern, s=50, c=extended_pattern, cmap='viridis',
-               edgecolors='black', linewidth=0.5, zorder=5)
-    ax.set_ylabel('Category', fontsize=12, fontweight='bold')
-    ax.set_title('FizzBuzz Pattern Waveform (Categories)', fontsize=14, fontweight='bold')
+    ax.plot(x, extended_pattern, linewidth=2, color="steelblue")
+    ax.scatter(
+        x,
+        extended_pattern,
+        s=50,
+        c=extended_pattern,
+        cmap="viridis",
+        edgecolors="black",
+        linewidth=0.5,
+        zorder=5,
+    )
+    ax.set_ylabel("Category", fontsize=12, fontweight="bold")
+    ax.set_title("FizzBuzz Pattern Waveform (Categories)", fontsize=14, fontweight="bold")
     ax.set_yticks([0, 1, 2, 3])
-    ax.set_yticklabels(['Number', 'Fizz', 'Buzz', 'FizzBuzz'])
+    ax.set_yticklabels(["Number", "Fizz", "Buzz", "FizzBuzz"])
     ax.grid(True, alpha=0.3)
-    ax.axhline(y=0, color='gray', linestyle='--', alpha=0.5)
+    ax.axhline(y=0, color="gray", linestyle="--", alpha=0.5)
 
     # Add period markers
     for i in range(periods + 1):
-        ax.axvline(x=i * 15 + 1, color='red', linestyle='--', alpha=0.7, linewidth=1.5)
+        ax.axvline(x=i * 15 + 1, color="red", linestyle="--", alpha=0.7, linewidth=1.5)
         if i < periods:
-            ax.text(i * 15 + 8, 3.2, f'Period {i+1}', ha='center',
-                   fontsize=10, color='red', fontweight='bold')
+            ax.text(
+                i * 15 + 8,
+                3.2,
+                f"Period {i + 1}",
+                ha="center",
+                fontsize=10,
+                color="red",
+                fontweight="bold",
+            )
 
     # Plot 2: Individual divisibility signals
     ax = axes[1]
@@ -43,51 +58,53 @@ def plot_pattern_waveform(periods=5, save_path="fizzbuzz_waveform.png"):
     div_by_3 = ((extended_pattern == 1) | (extended_pattern == 3)).astype(int)
     div_by_5 = ((extended_pattern == 2) | (extended_pattern == 3)).astype(int)
 
-    ax.fill_between(x, 0, div_by_3, alpha=0.5, color='blue', label='Divisible by 3 (Fizz)')
-    ax.fill_between(x, 0, -div_by_5, alpha=0.5, color='orange', label='Divisible by 5 (Buzz)')
-    ax.plot(x, div_by_3, linewidth=2, color='blue')
-    ax.plot(x, -div_by_5, linewidth=2, color='orange')
+    ax.fill_between(x, 0, div_by_3, alpha=0.5, color="blue", label="Divisible by 3 (Fizz)")
+    ax.fill_between(x, 0, -div_by_5, alpha=0.5, color="orange", label="Divisible by 5 (Buzz)")
+    ax.plot(x, div_by_3, linewidth=2, color="blue")
+    ax.plot(x, -div_by_5, linewidth=2, color="orange")
 
-    ax.set_ylabel('Divisibility', fontsize=12, fontweight='bold')
-    ax.set_title('Component Signals: Divisibility by 3 and 5', fontsize=14, fontweight='bold')
+    ax.set_ylabel("Divisibility", fontsize=12, fontweight="bold")
+    ax.set_title("Component Signals: Divisibility by 3 and 5", fontsize=14, fontweight="bold")
     ax.set_ylim(-1.3, 1.3)
     ax.set_yticks([-1, 0, 1])
-    ax.set_yticklabels(['Div by 5', '0', 'Div by 3'])
+    ax.set_yticklabels(["Div by 5", "0", "Div by 3"])
     ax.grid(True, alpha=0.3)
-    ax.legend(loc='upper right')
+    ax.legend(loc="upper right")
 
     # Add period markers
     for i in range(periods + 1):
-        ax.axvline(x=i * 15 + 1, color='red', linestyle='--', alpha=0.7, linewidth=1.5)
+        ax.axvline(x=i * 15 + 1, color="red", linestyle="--", alpha=0.7, linewidth=1.5)
 
     # Plot 3: Binary representation (as a spectrogram-style viz)
     ax = axes[2]
 
     # Create binary matrix: each row is a bit
-    binary_matrix = np.array([
-        div_by_3,
-        div_by_5
-    ])
+    binary_matrix = np.array([div_by_3, div_by_5])
 
-    im = ax.imshow(binary_matrix, aspect='auto', cmap='hot', interpolation='nearest',
-                   extent=[0.5, len(extended_pattern) + 0.5, -0.5, 1.5])
+    im = ax.imshow(
+        binary_matrix,
+        aspect="auto",
+        cmap="hot",
+        interpolation="nearest",
+        extent=[0.5, len(extended_pattern) + 0.5, -0.5, 1.5],
+    )
     ax.set_yticks([0, 1])
-    ax.set_yticklabels(['Div by 3', 'Div by 5'])
-    ax.set_xlabel('Position', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Divisor Check', fontsize=12, fontweight='bold')
-    ax.set_title('Binary Divisibility Matrix', fontsize=14, fontweight='bold')
+    ax.set_yticklabels(["Div by 3", "Div by 5"])
+    ax.set_xlabel("Position", fontsize=12, fontweight="bold")
+    ax.set_ylabel("Divisor Check", fontsize=12, fontweight="bold")
+    ax.set_title("Binary Divisibility Matrix", fontsize=14, fontweight="bold")
 
     # Add colorbar
     cbar = plt.colorbar(im, ax=ax)
     cbar.set_ticks([0, 1])
-    cbar.set_ticklabels(['False', 'True'])
+    cbar.set_ticklabels(["False", "True"])
 
     # Add period markers
     for i in range(periods + 1):
-        ax.axvline(x=i * 15 + 0.5, color='cyan', linestyle='--', alpha=0.7, linewidth=1.5)
+        ax.axvline(x=i * 15 + 0.5, color="cyan", linestyle="--", alpha=0.7, linewidth=1.5)
 
     plt.tight_layout()
-    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
     print(f"Waveform saved to {save_path}")
 
     return fig
@@ -111,34 +128,52 @@ def plot_frequency_spectrum(n=1000, save_path="fizzbuzz_fft.png"):
 
     # Time domain
     x = np.arange(n)
-    ax1.plot(x[:150], categories[:150], linewidth=1.5, color='steelblue')
-    ax1.scatter(x[:150], categories[:150], s=20, c=categories[:150],
-               cmap='viridis', edgecolors='black', linewidth=0.3)
-    ax1.set_xlabel('Position', fontsize=11, fontweight='bold')
-    ax1.set_ylabel('Category', fontsize=11, fontweight='bold')
-    ax1.set_title('Time Domain: First 150 Values', fontsize=13, fontweight='bold')
+    ax1.plot(x[:150], categories[:150], linewidth=1.5, color="steelblue")
+    ax1.scatter(
+        x[:150],
+        categories[:150],
+        s=20,
+        c=categories[:150],
+        cmap="viridis",
+        edgecolors="black",
+        linewidth=0.3,
+    )
+    ax1.set_xlabel("Position", fontsize=11, fontweight="bold")
+    ax1.set_ylabel("Category", fontsize=11, fontweight="bold")
+    ax1.set_title("Time Domain: First 150 Values", fontsize=13, fontweight="bold")
     ax1.grid(True, alpha=0.3)
 
     # Frequency domain
     # Only plot positive frequencies
-    positive_freqs = freqs[:n//2]
-    positive_magnitude = magnitude[:n//2]
+    positive_freqs = freqs[: n // 2]
+    positive_magnitude = magnitude[: n // 2]
 
-    ax2.stem(positive_freqs[:50], positive_magnitude[:50], linefmt='steelblue',
-            markerfmt='o', basefmt='gray')
-    ax2.set_xlabel('Frequency (cycles per sample)', fontsize=11, fontweight='bold')
-    ax2.set_ylabel('Magnitude', fontsize=11, fontweight='bold')
-    ax2.set_title('Frequency Spectrum (FFT)', fontsize=13, fontweight='bold')
+    ax2.stem(
+        positive_freqs[:50],
+        positive_magnitude[:50],
+        linefmt="steelblue",
+        markerfmt="o",
+        basefmt="gray",
+    )
+    ax2.set_xlabel("Frequency (cycles per sample)", fontsize=11, fontweight="bold")
+    ax2.set_ylabel("Magnitude", fontsize=11, fontweight="bold")
+    ax2.set_title("Frequency Spectrum (FFT)", fontsize=13, fontweight="bold")
     ax2.grid(True, alpha=0.3)
 
     # Highlight the fundamental frequency (1/15)
-    fundamental = 1/15
-    ax2.axvline(x=fundamental, color='red', linestyle='--', alpha=0.7, linewidth=2,
-               label=f'Fundamental (1/15 ≈ {fundamental:.4f})')
+    fundamental = 1 / 15
+    ax2.axvline(
+        x=fundamental,
+        color="red",
+        linestyle="--",
+        alpha=0.7,
+        linewidth=2,
+        label=f"Fundamental (1/15 ≈ {fundamental:.4f})",
+    )
     ax2.legend()
 
     plt.tight_layout()
-    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
     print(f"Frequency spectrum saved to {save_path}")
 
     return fig
@@ -157,7 +192,7 @@ def plot_2d_heatmap(size=15, save_path="fizzbuzz_2d.png"):
 
     fig, ax = plt.subplots(figsize=(10, 10))
 
-    im = ax.imshow(grid, cmap='viridis', interpolation='nearest')
+    im = ax.imshow(grid, cmap="viridis", interpolation="nearest")
 
     # Add text annotations
     for i in range(size):
@@ -175,12 +210,12 @@ def plot_2d_heatmap(size=15, save_path="fizzbuzz_2d.png"):
             else:
                 text = "FB"
 
-            color = 'white' if cat >= 2 else 'black'
-            ax.text(j, i, text, ha="center", va="center",
-                   color=color, fontsize=8, fontweight='bold')
+            color = "white" if cat >= 2 else "black"
+            ax.text(
+                j, i, text, ha="center", va="center", color=color, fontsize=8, fontweight="bold"
+            )
 
-    ax.set_title(f'FizzBuzz as a {size}×{size} Texture',
-                fontsize=14, fontweight='bold')
+    ax.set_title(f"FizzBuzz as a {size}×{size} Texture", fontsize=14, fontweight="bold")
     ax.set_xticks(range(size))
     ax.set_yticks(range(size))
     ax.set_xticklabels(range(1, size + 1))
@@ -188,10 +223,10 @@ def plot_2d_heatmap(size=15, save_path="fizzbuzz_2d.png"):
 
     cbar = plt.colorbar(im, ax=ax)
     cbar.set_ticks([0, 1, 2, 3])
-    cbar.set_ticklabels(['Number', 'Fizz', 'Buzz', 'FizzBuzz'])
+    cbar.set_ticklabels(["Number", "Fizz", "Buzz", "FizzBuzz"])
 
     plt.tight_layout()
-    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.savefig(save_path, dpi=150, bbox_inches="tight")
     print(f"2D heatmap saved to {save_path}")
 
     return fig

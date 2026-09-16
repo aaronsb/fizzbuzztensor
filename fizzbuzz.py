@@ -36,7 +36,7 @@ def fizzbuzz(n):
     result = DECODER[categories].copy()
 
     # Fill in numbers where category is 0
-    number_mask = (categories == 0)
+    number_mask = categories == 0
     result[number_mask] = nums[number_mask].astype(str)
 
     return result
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     nums = np.arange(1, 36)
     categories = pattern_357[(nums - 1) % len(pattern_357)]
     result = decoder_357[categories].copy()
-    number_mask = (result == "{}")
+    number_mask = result == "{}"
     result[number_mask] = nums[number_mask].astype(str)
 
     for i, val in enumerate(result, 1):
